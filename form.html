@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คำร้องขอโอนย้ายสาขาวิชาต่างคณะ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#A0C878] min-h-screen flex items-center justify-center p-6">
+  <div class="max-w-2xl w-full bg-white rounded-3xl shadow-lg border border-gray-200 overflow-hidden">
+    <div class="p-8">
+      <h2 class="pt-4 text-3xl font-bold text-center mb-6">คำร้องขอโอนย้ายสาขาวิชาต่างคณะ</h2>
+      <form class="space-y-4">
+        <div class="mb-6">
+          <label for="requestDate" class="block font-semibold mb-1">วันที่ส่งคำร้อง</label>
+          <input type="date" id="requestDate" name="requestDate" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none" required>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">ชื่อ-นามสกุล</label>
+          <input type="text" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none" 
+          placeholder="กรุณากรอกชื่อ-นามสกุล" required>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">รหัสนักศึกษา</label>
+          <input type="text" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none" 
+          placeholder="กรุณากรอกรหัสนักศึกษา" required>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">หลักสูตร</label>
+          <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2">
+              <input type="radio" name="program" value="4 ปี" required>
+              หลักสูตร 4 ปี
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="radio" name="program" value="2 ปีเทียบโอน">
+              หลักสูตร 2 ปีเทียบโอน
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">คณะ (เดิม)</label>
+          <input type="text" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none" 
+          placeholder="กรุณากรอกคณะที่เรียนในปัจจุบัน" required>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">สาขา (เดิม)</label>
+          <input type="text" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none" 
+          placeholder="กรุณากรอกสาขาที่เรียนในปัจจุบัน" required>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">ความประสงค์ที่จะโอนย้าย</label>
+          <textarea id="reason" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none" required></textarea>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">คณะ (ใหม่)</label>
+          <input type="text" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none" 
+          placeholder="กรุณากรอกคณะที่ต้องการย้าย" required>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">สาขา (ใหม่)</label>
+          <input type="text" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none" 
+          placeholder="กรุณากรอกสาขาที่ต้องการย้าย" required>
+        </div>
+        <div class="text-center pt-4">
+          <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">ส่งคำร้อง</button>
+        </div>
+      </form>
+    </div>
+  </div>
+    <div id="modal" class="hidden mt-6 p-4 bg-green-100 border border-green-400 rounded text-center">
+      <p id="modalText" class="mb-2 font-semibold"></p>
+      <button onclick="closeModal()" class="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">ปิด</button>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById('transferForm');
+    const modal = document.getElementById('modal');
+    const modalText = document.getElementById('modalText');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const studentId = document.getElementById('studentId').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const reason = document.getElementById('reason').value.trim();
+
+      document.getElementById('studentIdError').textContent = '';
+      document.getElementById('phoneError').textContent = '';
+      document.getElementById('reasonError').textContent = '';
+
+      let hasError = false;
+
+      if (studentId.length !== 10 || isNaN(studentId)) {
+        document.getElementById('studentIdError').textContent = 'รหัสนักศึกษาต้องเป็นตัวเลข 10 หลัก';
+        hasError = true;
+      }
+
+      if (phone.length !== 10 || isNaN(phone)) {
+        document.getElementById('phoneError').textContent = 'เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก';
+        hasError = true;
+      }
+
+      if (reason === '') {
+        document.getElementById('reasonError').textContent = 'กรุณากรอกเหตุผลในการย้าย';
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      modalText.textContent = 'ส่งคำร้องเรียบร้อยแล้ว';
+      modal.classList.remove('hidden');
+    });
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      form.reset();
+    }
+  </script>
+</body>
+</html>
